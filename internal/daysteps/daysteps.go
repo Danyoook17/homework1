@@ -6,6 +6,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/Yandex-Practicum/tracker/internal/spentcalories"
 )
 var ErrInvalidDataFormat = errors.New("invalid data format ")
 
@@ -20,12 +22,12 @@ func parsePackage(data string) (int, time.Duration, error) {
 	substrings := strings.Split(data, ",")
 
 	if len(substrings) != 2 {
-		return 0, 0, ErrInvalidDataFormat
+		return 0, 0, fmt.Errorf("invalid length data: %w", ErrInvalidDataFormat)
 	}
 
 	stepsNumber, err := strconv.Atoi(substrings[0])
 	if err != nil {
-		return 0, 0, ErrInvalidDataFormat
+		return 0, 0, errors.Join(err, ErrInvalidDataFormat)
 	}
 
 	if stepsNumber <= 0 {
@@ -47,5 +49,24 @@ func parsePackage(data string) (int, time.Duration, error) {
 }
 
 func DayActionInfo(data string, weight, height float64) string {
-	return ""
+	stepsNumber, trainingDuration, err := parsePackage(data)
+	if err != nil {
+		fmt.Println(err)
+		return ""
+	}
+
+	if stepsNumber <= 0 {
+		return ""
+	}
+
+	distanceTrainingM := float64(stepsNumber) * stepLength
+	distanceTrainingKm := distanceTrainingM / float64(mInKm)
+
+	calories, err := spentcalories.WalkingSpentCalories(stepsNumber, weight, height, trainingDuration)
+	if err != nil {
+		fmt.Println(err)
+		return ""
+	}
+
+	return fmt.Sprintf("Количество шагов: %d.\nДистанция составила %.2f км.\nВы сожгли %.2f ккал.", stepsNumber, distanceTrainingKm, calories)
 }
