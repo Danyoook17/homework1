@@ -65,6 +65,7 @@ func meanSpeed(steps int, height float64, duration time.Duration) float64 {
 
 	dist := distance(steps, height)
 
+	
 	hours := duration.Hours()
 
 	avgSpeed := dist / hours
