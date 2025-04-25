@@ -47,7 +47,6 @@ func parseTraining(data string) (int, string, time.Duration, error) {
 }
 
 func distance(steps int, height float64) float64 {
-
 	stepLength := height * stepLengthCoefficient
 
 	distanceInMetres := stepLength * float64(steps)
@@ -58,14 +57,12 @@ func distance(steps int, height float64) float64 {
 }
 
 func meanSpeed(steps int, height float64, duration time.Duration) float64 {
-
 	if duration <= 0 {
 		return 0
 	}
 
 	dist := distance(steps, height)
 
-	
 	hours := duration.Hours()
 
 	avgSpeed := dist / hours
@@ -82,13 +79,11 @@ func TrainingInfo(data string, weight, height float64) (string, error) {
 	var calories float64
 
 	switch activity {
-
 	case "Бег":
 		calories, err = RunningSpentCalories(stepsNumber, weight, height, duration)
 		if err != nil {
 			return "", err
 		}
-
 	case "Ходьба":
 		calories, err = WalkingSpentCalories(stepsNumber, weight, height, duration)
 		if err != nil {
@@ -109,7 +104,6 @@ func TrainingInfo(data string, weight, height float64) (string, error) {
 }
 
 func RunningSpentCalories(steps int, weight, height float64, duration time.Duration) (float64, error) {
-
 	if steps <= 0 {
 		return 0, errors.New("steps can not be negative")
 	}

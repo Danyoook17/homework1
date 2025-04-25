@@ -3,13 +3,15 @@ package daysteps
 import (
 	"errors"
 	"fmt"
+	"log"
 	"strconv"
 	"strings"
 	"time"
 
 	"github.com/Yandex-Practicum/tracker/internal/spentcalories"
 )
-var ErrInvalidDataFormat = errors.New("invalid data format ")
+
+var ErrInvalidDataFormat = errors.New("invalid data format")
 
 const (
 	// Длина одного шага в метрах
@@ -34,8 +36,6 @@ func parsePackage(data string) (int, time.Duration, error) {
 		return 0, 0, fmt.Errorf("negative number of steps: %w", ErrInvalidDataFormat)
 	}
 
-	
-
 	trainingDuration, err := time.ParseDuration(substrings[1])
 	if err != nil {
 		return 0, 0, errors.Join(err, ErrInvalidDataFormat)
@@ -51,7 +51,8 @@ func parsePackage(data string) (int, time.Duration, error) {
 func DayActionInfo(data string, weight, height float64) string {
 	stepsNumber, trainingDuration, err := parsePackage(data)
 	if err != nil {
-		fmt.Println(err)
+		log.Printf("полученная ошибка %s", err)
+
 		return ""
 	}
 
@@ -64,9 +65,10 @@ func DayActionInfo(data string, weight, height float64) string {
 
 	calories, err := spentcalories.WalkingSpentCalories(stepsNumber, weight, height, trainingDuration)
 	if err != nil {
-		fmt.Println(err)
+		log.Printf("полученная ошибка %s", err)
+
 		return ""
 	}
 
-	return fmt.Sprintf("Количество шагов: %d.\nДистанция составила %.2f км.\nВы сожгли %.2f ккал.", stepsNumber, distanceTrainingKm, calories)
+	return fmt.Sprintf("Количество шагов: %d.\nДистанция составила %.2f км.\nВы сожгли %.2f ккал.\n", stepsNumber, distanceTrainingKm, calories)
 }
